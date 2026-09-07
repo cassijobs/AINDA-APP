@@ -108,9 +108,19 @@ async function abrirEncontro(codigo, ativacao = {}) {
 async function depoisDoLogin() {
   const codigo = codigoDaEntrada();
   if (codigo) {
-    return abrirEncontro(codigo);
+    try {
+      return await abrirEncontro(codigo);
+    } catch (erro) {
+      const reiniciado = /não foi reconhecido para esta conta|progresso deste conjunto não foi encontrado/i.test(erro.message || "");
+      if (!reiniciado) throw erro;
+      $("#codigoConjunto").value = codigo;
+      $("#mensagemAtivacao").textContent = "Este conjunto está pronto para um novo começo. Digite a chave de ativação.";
+      mostrarTela("telaAtivacao");
+      return;
+    }
   }
-  $("#codigoConjunto").value = codigo; mostrarTela("telaAtivacao");
+  $("#codigoConjunto").value = codigo;
+  mostrarTela("telaAtivacao");
 }
 
 function colorirDesenho(canvas, caminho, cor) {

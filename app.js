@@ -51,6 +51,10 @@ function mostrarTela(id) {
 }
 
 function codigoDaEntrada() { return (parametrosUrl.get("codigo") || localStorage.getItem(CHAVE_CODIGO) || "").trim().toUpperCase(); }
+function formatarChaveAtivacao(valor) {
+  const caracteres = String(valor || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 16);
+  return caracteres.match(/.{1,4}/g)?.join("-") || "";
+}
 
 const ETAPAS = {
   encontro: { etiqueta: "PRIMEIRO MOMENTO — PERCEBER", chamadas: ["Hoje pode começar de um jeito mais leve.", "Há algo pequeno para perceber hoje.", "Este momento pode ser um começo."], continuidades: ["Seu pingente será companhia e apoio ao longo da sua jornada.", "Leve esta ideia com você e volte quando fizer sentido.", "Deixe este encontro acompanhar um pedaço do seu dia."] },
@@ -150,11 +154,11 @@ $("#reenviarConfirmacao").addEventListener("click", async () => {
 });
 
 $("#codigoConjunto").addEventListener("input", evento => { evento.target.value = evento.target.value.toUpperCase(); });
-$("#chaveConjunto").addEventListener("input", evento => { evento.target.value = evento.target.value.toUpperCase(); });
+$("#chaveConjunto").addEventListener("input", evento => { evento.target.value = formatarChaveAtivacao(evento.target.value); });
 
 $("#formAtivacao").addEventListener("submit", async evento => {
   evento.preventDefault(); const mensagem = $("#mensagemAtivacao"), botao = $("#ativarConjunto"); mensagem.textContent = "Reconhecendo seu conjunto…"; botao.disabled = true;
-  try { const codigo = $("#codigoConjunto").value.trim().toUpperCase(); const dados = await chamarRpc("ainda_ativar_conjunto", { p_codigo: codigo, p_chave: $("#chaveConjunto").value.trim().toUpperCase(), p_nome_preferido: $("#nomePreferido").value.trim() }); const ativacao = Array.isArray(dados) ? dados[0] : dados; if (!ativacao?.codigo) throw new Error("Não foi possível confirmar o conjunto."); localStorage.setItem(CHAVE_CODIGO, ativacao.codigo); await abrirEncontro(ativacao.codigo, ativacao); } catch (erro) { mensagem.textContent = erro.message; } finally { botao.disabled = false; }
+  try { const codigo = $("#codigoConjunto").value.trim().toUpperCase(); const dados = await chamarRpc("ainda_ativar_conjunto", { p_codigo: codigo, p_chave: formatarChaveAtivacao($("#chaveConjunto").value), p_nome_preferido: $("#nomePreferido").value.trim() }); const ativacao = Array.isArray(dados) ? dados[0] : dados; if (!ativacao?.codigo) throw new Error("Não foi possível confirmar o conjunto."); localStorage.setItem(CHAVE_CODIGO, ativacao.codigo); await abrirEncontro(ativacao.codigo, ativacao); } catch (erro) { mensagem.textContent = erro.message; } finally { botao.disabled = false; }
 });
 
 

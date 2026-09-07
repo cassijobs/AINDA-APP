@@ -10,3 +10,5 @@
 .cena-ainda{transition-duration:2.6s;transition-timing-function:cubic-bezier(.22,.61,.36,1)}
 .ativacao{min-height:calc(100vh - 120px);display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.78fr);align-items:center;gap:clamp(45px,8vw,110px);padding:36px 0 80px}.icone-conta.coral{background:linear-gradient(135deg,#ffd4c9,var(--coral));color:#803c31}.botao:disabled{opacity:.55;cursor:wait;transform:none!important}
 @media(max-width:800px){.ativacao{grid-template-columns:1fr;padding-top:30px;gap:45px}}
+
+.escanear-caneca{display:flex;align-items:center;justify-content:center;gap:9px;min-height:52px;border-radius:15px;background:linear-gradient(135deg,var(--azul),#8c7bd8);color:white;text-decoration:none;font-weight:750;box-shadow:0 12px 30px rgba(90,114,216,.22)}.escanear-caneca span{font-size:1.35rem}.separador-acesso{display:flex;align-items:center;gap:12px;margin:22px 0 5px;color:#9298a7;font-size:.75rem}.separador-acesso:before,.separador-acesso:after{content:"";height:1px;flex:1;background:var(--linha)}.separador-acesso span{white-space:nowrap}

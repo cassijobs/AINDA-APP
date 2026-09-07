@@ -1,0 +1,3 @@
+AINDA — SCANNER DE CANECAS
+
+Publique targets/lote-001.mind e rotas/lote-001.json e registre o lote em config.json. A ordem das rotas deve ser a mesma usada no compilador MindAR; targetIndex começa em 0. As imagens originais continuam privadas.

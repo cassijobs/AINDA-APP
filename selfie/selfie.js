@@ -23,7 +23,7 @@ function espelhado(ctx,video,x,y,w,h){ctx.save();ctx.translate(x+w,y);ctx.scale(
 function capturar(){
   const video=document.querySelector('#video'),canvas=document.querySelector('#canvas');
   if(!video.videoWidth)return;
-  const sourceW=video.videoWidth,sourceH=video.videoHeight,outW=1080,outH=1920,ctx=canvas.getContext('2d');
+  const sourceW=video.videoWidth,sourceH=video.videoHeight,outW=1080,outH=1350,ctx=canvas.getContext('2d');
   canvas.width=outW;canvas.height=outH;
   const escala=Math.max(outW/sourceW,outH/sourceH),fotoW=sourceW*escala,fotoH=sourceH*escala,x=(outW-fotoW)/2,y=(outH-fotoH)/2;
   espelhado(ctx,video,x,y,fotoW,fotoH);

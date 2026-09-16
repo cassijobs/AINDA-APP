@@ -1,10 +1,10 @@
 {
   "versao": 1,
-  "geradoEm": "2026-09-07T17:56:56.529Z",
+  "geradoEm": "2026-09-16T16:28:12.322Z",
   "lotes": [
     {
       "nome": "lote-001",
-      "quantidade": 2,
+      "quantidade": 3,
       "targets": "./targets/lote-001.mind",
       "rotas": "./rotas/lote-001.json"
     }

@@ -20,9 +20,31 @@ async function abrir(){
   }
 }function arrastavel(el){let ativo=false,dx=0,dy=0;el.addEventListener('pointerdown',e=>{ativo=true;el.setPointerCapture(e.pointerId);const r=el.getBoundingClientRect();dx=e.clientX-r.left;dy=e.clientY-r.top});el.addEventListener('pointermove',e=>{if(!ativo)return;const x=Math.max(0,Math.min(innerWidth-el.offsetWidth,e.clientX-dx)),y=Math.max(70,Math.min(innerHeight-el.offsetHeight-120,e.clientY-dy));el.style.left=x+'px';el.style.top=y+'px';el.style.transform='none'});el.addEventListener('pointerup',()=>ativo=false)}
 function espelhado(ctx,video,x,y,w,h){ctx.save();ctx.translate(x+w,y);ctx.scale(-1,1);ctx.drawImage(video,0,0,video.videoWidth,video.videoHeight,0,0,w,h);ctx.restore()}
-function capturar(){const video=document.querySelector('#video'),canvas=document.querySelector('#canvas');if(!video.videoWidth)return;const w=video.videoWidth,h=video.videoHeight,ctx=canvas.getContext('2d');canvas.width=w;canvas.height=h;espelhado(ctx,video,0,0,w,h);desenharFrase(ctx,w,h);canvas.toBlob(blob=>{arquivo=URL.createObjectURL(blob);parar();resultado(blob)},'image/jpeg',.92)}
-function desenharEfeito(ctx,x,y,w,h){ctx.save();ctx.strokeStyle='#f4df68';ctx.lineWidth=Math.max(5,w*.018);ctx.shadowColor='#f4df68';ctx.shadowBlur=w*.09;ctx.beginPath();ctx.arc(x+w/2,y+h/2,w*.39,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#f4df68';ctx.font=Math.round(w*.15)+'px serif';ctx.fillText('✦',x+w*.06,y+h*.2);ctx.fillText('✦',x+w*.78,y+h*.86);ctx.restore()}
-function desenharFrase(ctx,w,h){const faixa=h*.18;ctx.fillStyle='#15132399';ctx.fillRect(0,h-faixa,w,faixa);ctx.fillStyle='white';ctx.textAlign='center';ctx.shadowColor='#000';ctx.shadowBlur=8;ctx.font=`600 ${Math.max(26,Math.round(w*.055))}px Georgia`;ctx.fillText('Ainda há caminho.',w/2,h-faixa*.48);ctx.font=`600 ${Math.max(13,Math.round(w*.022))}px Arial`;ctx.fillText('AINDA',w/2,h-faixa*.18)}
-function resultado(blob){window.__foto=blob;app.innerHTML=`<section class="tela resultado"><span class="marca">MOMENTO GUARDADO</span><h2>Sua fotografia está pronta.</h2><img src="${arquivo}" alt="Sua selfie com o efeito Ainda"><div class="acoes"><button class="botao principal" id="compartilhar">Compartilhar</button><button class="botao texto" id="outra">Tirar outra</button></div></section>`;document.querySelector('#compartilhar').onclick=compartilhar;document.querySelector('#outra').onclick=abrir}
+function capturar(){
+  const video=document.querySelector('#video'),canvas=document.querySelector('#canvas');
+  if(!video.videoWidth)return;
+  const sourceW=video.videoWidth,sourceH=video.videoHeight,outW=1080,outH=1920,ctx=canvas.getContext('2d');
+  canvas.width=outW;canvas.height=outH;
+  const escala=Math.max(outW/sourceW,outH/sourceH),fotoW=sourceW*escala,fotoH=sourceH*escala,x=(outW-fotoW)/2,y=(outH-fotoH)/2;
+  espelhado(ctx,video,x,y,fotoW,fotoH);
+  desenharFrase(ctx,outW,outH);
+  canvas.toBlob(blob=>{arquivo=URL.createObjectURL(blob);parar();resultado(blob)},'image/jpeg',.92)
+}function desenharEfeito(ctx,x,y,w,h){ctx.save();ctx.strokeStyle='#f4df68';ctx.lineWidth=Math.max(5,w*.018);ctx.shadowColor='#f4df68';ctx.shadowBlur=w*.09;ctx.beginPath();ctx.arc(x+w/2,y+h/2,w*.39,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#f4df68';ctx.font=Math.round(w*.15)+'px serif';ctx.fillText('✦',x+w*.06,y+h*.2);ctx.fillText('✦',x+w*.78,y+h*.86);ctx.restore()}
+function desenharFrase(ctx,w,h){
+  ctx.save();
+  ctx.translate(w/2,h*.78);
+  ctx.rotate(-10*Math.PI/180);
+  ctx.textAlign='center';
+  ctx.fillStyle='#fff4d6';
+  ctx.shadowColor='rgba(81,55,132,.9)';
+  ctx.shadowBlur=18;
+  ctx.font='italic 94px "Segoe Script","Brush Script MT",cursive';
+  ctx.fillText('Ainda há caminho.',0,0);
+  ctx.shadowBlur=8;
+  ctx.font='700 25px Arial';
+  ctx.letterSpacing='8px';
+  ctx.fillText('AINDA',0,58);
+  ctx.restore();
+}function resultado(blob){window.__foto=blob;app.innerHTML=`<section class="tela resultado"><span class="marca">MOMENTO GUARDADO</span><h2>Seu momento está pronto.</h2><img src="${arquivo}" alt="Sua selfie com uma frase do Ainda"><div class="acoes"><button class="botao principal" id="compartilhar">Compartilhar</button><button class="botao texto" id="outra">Tirar outra</button></div></section>`;document.querySelector('#compartilhar').onclick=compartilhar;document.querySelector('#outra').onclick=abrir}
 async function compartilhar(){const f=new File([window.__foto],'ainda-selfie.jpg',{type:'image/jpeg'});if(navigator.canShare?.({files:[f]})){try{await navigator.share({files:[f],title:'AINDA'});return}catch(e){if(e.name==='AbortError')return}}const a=document.createElement('a');a.href=arquivo;a.download='ainda-selfie.jpg';a.click()}
 function parar(){stream?.getTracks().forEach(t=>t.stop());stream=null}addEventListener('pagehide',parar);inicio();
